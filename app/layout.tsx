@@ -1,8 +1,10 @@
 import './globals.css'
 import { Inter } from 'next/font/google'
 import React from "react";
+import Head from 'next/head';
 
 const inter = Inter({ subsets: ['latin'] })
+
 
 export const metadata = {
   title: 'Create Next App',
@@ -16,12 +18,12 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <head>
+      <Head>
         <link
           href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700&display=swap"
           rel="stylesheet"
         />
-      </head>
+      </Head>
       <body className={inter.className}>{children}</body>
     </html>
   );

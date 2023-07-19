@@ -1,5 +1,7 @@
+/* eslint-disable no-undef */
 /** @type {import('tailwindcss').Config} */
 // eslint-disable-next-line no-undef
+
 module.exports = {
   content: [
     "./pages/**/*.{js,ts,jsx,tsx,mdx}",
@@ -23,7 +25,7 @@ module.exports = {
       },
       fontSize: {
         sm: "20px",
-        md: "20px",
+        md: "px",
         lg: "36px",
       },
       screens: {
