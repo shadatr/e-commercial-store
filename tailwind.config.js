@@ -1,6 +1,6 @@
 /* eslint-disable no-undef */
+
 /** @type {import('tailwindcss').Config} */
-// eslint-disable-next-line no-undef
 
 module.exports = {
   content: [
@@ -10,14 +10,12 @@ module.exports = {
   ],
   theme: {
     extend: {
-      backgroundImage: {
-
-      },
+      backgroundImage: {},
       colors: {
         primary: "#00000",
         secondary: "#FFFFFF",
         blue: "#3958F9",
-        lightGray: "#D3DCF2",
+        lightGray: "#D9D9D9",
         darkGray: "#91929C",
       },
       fontFamily: {
@@ -36,3 +34,4 @@ module.exports = {
   },
   plugins: [],
 };
+

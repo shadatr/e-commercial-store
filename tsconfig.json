@@ -20,9 +20,16 @@
       }
     ],
     "paths": {
-      "@component/*": ["./*"]
+      "@/*": ["./*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    "app/components/dialog.jsx",
+    "app/components/asignPermission.jsx"
+  ],
   "exclude": ["node_modules"]
 }

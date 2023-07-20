@@ -3,6 +3,6 @@ const nextConfig = {
   experimental: {
     appDir: true,
   },
-}
-
-module.exports = nextConfig
+};
+// eslint-disable-next-line no-undef
+module.exports = nextConfig;
