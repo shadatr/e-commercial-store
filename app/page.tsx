@@ -1,5 +1,6 @@
 import React from "react"
 import Image from "next/image";
+import Link from "next/link";
 
 
 export default function Home() {
@@ -11,9 +12,9 @@ export default function Home() {
         Connect, Communicate, and Listen in Style: Explore Our Cutting-Edge Tech
         Collection!
       </h1>
-      <button className="w-[180px] h-[45px] rounded-[8px] bg-blue text-[18px] m-6 ml-24 text-secondary">
+      <Link href={'/devices'} className="w-[180px] h-[45px] rounded-[8px] bg-blue text-[18px] mt-6 ml-24 text-secondary p-3">
         Start Shopping
-      </button>
+      </Link>
       </span>
     </div>
   );
