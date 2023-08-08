@@ -245,14 +245,15 @@ const page = () => {
       )}
       {activeTab== 'Tab 2'&&(<div className="border border-lightGray p-5  w-[1000px] rounded-2xl">
           {clientItems &&
-            clientItems.map((item) => (
+            clientItems.map((item,index) => (
               <OrderedItem
+              key={index}
                 order={item}
               />
             ))}
           {!clientItems.length && (
             <h1 className="text-sm text-darkGray font-bold flex items-center justify-center p-5">
-              You haven't ordered anything yet!
+              You have not ordered anything yet!
             </h1>
           )}</div>)}
     </div>

@@ -15,7 +15,6 @@ import {
 import { FaRegStar } from "react-icons/fa";
 import { useSession } from "next-auth/react";
 import { toast } from "react-toastify";
-import { redirect } from "next/navigation";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 

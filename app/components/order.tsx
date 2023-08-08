@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React from "react";
 import { OrdersType } from "../types/types";
 import Link from "next/link";

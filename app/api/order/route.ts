@@ -29,7 +29,7 @@ export async function POST(request: Request) {
   const data = await request.json();
 
   try {
-    const res1=await supabase.from("tb_orders").insert([
+    await supabase.from("tb_orders").insert([
       {
         client_id: data.client_id,
         item_id: data.item_id,
@@ -37,7 +37,7 @@ export async function POST(request: Request) {
       },
     ]);
 
-    const res2 = await supabase.from("tb_cart").delete().eq("id", data.id);
+    await supabase.from("tb_cart").delete().eq("id", data.id);
 
     await supabase
       .from("tb_device_properties")

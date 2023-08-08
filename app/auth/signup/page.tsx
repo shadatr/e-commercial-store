@@ -1,11 +1,9 @@
 "use client";
 import { useRouter } from "next/navigation";
-import React, { useEffect, useRef, useState } from "react";
-import { signIn, useSession } from "next-auth/react";
+import React, { useRef } from "react";
 import { toast } from "react-toastify";
 import { createHash } from "crypto";
 import axios from "axios";
-import Link from "next/link";
 
 const LoginPage = () => {
   const router = useRouter();
@@ -13,7 +11,6 @@ const LoginPage = () => {
   const password1 = useRef<HTMLInputElement>(null);
   const password2 = useRef<HTMLInputElement>(null);
 
-  const { data: session } = useSession();
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();

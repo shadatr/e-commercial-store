@@ -12,7 +12,6 @@ import {
   PropType,
 } from "@/app/types/types";
 import Device from "@/app/components/device";
-import { useSession } from "next-auth/react";
 
 const Page = ({ params }: { params: { name: string } }) => {
   const [images, setImages] = useState<ImageType[]>([]);
@@ -31,7 +30,6 @@ const Page = ({ params }: { params: { name: string } }) => {
   const [checkedProcessor, setCheckedProcessor] = useState<number[]>([]);
   const [refresh, setRefresh] = useState<boolean>();
 
-  const session = useSession();
   useEffect(() => {
     async function downloadImages() {
       try {

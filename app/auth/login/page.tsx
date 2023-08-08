@@ -1,6 +1,6 @@
 'use client';
 import { useRouter } from 'next/navigation';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { signIn, useSession } from 'next-auth/react';
 import { toast } from 'react-toastify';
 import Link from 'next/link';
@@ -24,12 +24,11 @@ const LoginPage = () => {
     if (session) {
       router.push("/");
     }
-    if (result) {
-      
-    } else {
+    if (!result?.error) {
       toast.success('Login successful!');
       router.push('/'); // Redirect to the home page upon successful login
-    }
+      
+    } 
   };
 
 
@@ -67,7 +66,7 @@ const LoginPage = () => {
         >
           Login
         </button>
-        <p className="p-5">Don't have an account?</p>
+        <p className="p-5">Do not have an account?</p>
         <Link className="p-1 text-blue" href={"/auth/signup"}>
           SignUp
         </Link>

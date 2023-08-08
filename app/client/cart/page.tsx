@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
@@ -213,8 +214,8 @@ function page() {
         <h1 className="text-sm text-darkGray font-bold p-1">Your Items</h1>
         <div className="border border-lightGray p-5  w-[1000px] rounded-2xl">
           {clientItems &&
-            clientItems.map((item) => (
-              <Order
+            clientItems.map((item,index) => (
+              <Order key={index}
                 handleDeleteOrder={() =>
                   handleDeleteOrder(
                     cartItems.find(
@@ -228,7 +229,7 @@ function page() {
             ))}
           {!clientItems.length && (
             <h1 className="text-sm text-darkGray font-bold flex items-center justify-center p-5">
-              You haven't added any items to your cart yet!
+              You have not added any items to your cart yet!
             </h1>
           )}
           <div className="border-t-[1px] width-[900px] p-2 border-lightGray"></div>

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { createHash } from 'crypto';
 
 import CredentialsProvider from 'next-auth/providers/credentials';
@@ -31,7 +32,6 @@ const authOptions: NextAuthOptions = {
         if ((!data && error) || (data && data.length === 0)) {
           return null;
         } else {
-          const userObj = data[0] as any;
           return data[0] as any;
         }
       },
@@ -43,7 +43,6 @@ const authOptions: NextAuthOptions = {
       return { ...token, ...user };
     },
     async session({ session, token }) {
-      storage: "SupabaseStorage";
       session.user.token = token;
       session.user.address = token.address as string;
       session.user.created_at = token.created_at as string;

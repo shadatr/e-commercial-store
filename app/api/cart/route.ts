@@ -29,7 +29,7 @@ export async function POST(request: Request) {
   const data = await request.json();
 
   try {
-    const res = await supabase.from("tb_cart").insert([
+    await supabase.from("tb_cart").insert([
       {
         client_id: data.client_id,
         item_id: data.item_id,

@@ -1,11 +1,11 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import "react-toastify/dist/ReactToastify.css";
 import "./globals.css";
 import { ToastContainer } from "react-toastify";
 import { SessionProvider } from "next-auth/react";
-import Header from "./components/header";
-import Footer from "./components/footer";
-import Head from "next/head";
+import React from "react";
+
 
 export default function RootLayout({
   children,
@@ -24,4 +24,4 @@ export default function RootLayout({
       </body>
     </html>
   );
-};
+}
