@@ -1,5 +1,5 @@
 'use client';
-import { useRouter } from 'next/navigation';
+import { redirect, useRouter } from 'next/navigation';
 import React, { useState } from 'react';
 import { signIn, useSession } from 'next-auth/react';
 import { toast } from 'react-toastify';
@@ -22,7 +22,7 @@ const LoginPage = () => {
     console.log(result)
     console.log(session);
     if (session) {
-      router.push("/");
+      redirect("/");
     }
     if (!result?.error) {
       toast.success('Login successful!');
@@ -30,8 +30,6 @@ const LoginPage = () => {
       
     } 
   };
-
-
 
   return (
     <div className="h-screen flex items-center justify-center bg-gray-100">
