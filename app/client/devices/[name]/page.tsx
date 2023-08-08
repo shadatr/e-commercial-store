@@ -12,8 +12,9 @@ import {
   PropType,
 } from "@/app/types/types";
 import Device from "@/app/components/device";
+import { useSession } from "next-auth/react";
 
-const Page = () => {
+const Page = ({ params }: { params: { name: string } }) => {
   const [images, setImages] = useState<ImageType[]>([]);
   const [devices, setDevices] = useState<DeviceType[]>([]);
   const [colors, setColors] = useState<ColorType[]>([]);
@@ -30,10 +31,11 @@ const Page = () => {
   const [checkedProcessor, setCheckedProcessor] = useState<number[]>([]);
   const [refresh, setRefresh] = useState<boolean>();
 
+  const session = useSession({ required: true });
   useEffect(() => {
     async function downloadImages() {
       try {
-        const response = await axios.get("/api/getDevices");
+        const response = await axios.get(`/api/getDevices/${params.name}`);
         const data: DeviceType[] = response.data.message;
 
         const brandList: DeviceType[] = checkedBrand.length
@@ -134,17 +136,17 @@ const Page = () => {
     setRefresh(!refresh);
   };
 
-    const handleCheckProcessor = (item: number) => {
-      const checkedIndex = checkedProcessor.indexOf(item);
-      if (checkedIndex === -1) {
-        setCheckedProcessor([...checkedProcessor, item]);
-      } else {
-        const updatedChecked = [...checkedProcessor];
-        updatedChecked.splice(checkedIndex, 1);
-        setCheckedProcessor(updatedChecked);
-      }
-      setRefresh(!refresh);
-    };
+  const handleCheckProcessor = (item: number) => {
+    const checkedIndex = checkedProcessor.indexOf(item);
+    if (checkedIndex === -1) {
+      setCheckedProcessor([...checkedProcessor, item]);
+    } else {
+      const updatedChecked = [...checkedProcessor];
+      updatedChecked.splice(checkedIndex, 1);
+      setCheckedProcessor(updatedChecked);
+    }
+    setRefresh(!refresh);
+  };
 
   return (
     <div className="flex flex-row p-10">

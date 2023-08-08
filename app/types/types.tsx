@@ -53,3 +53,40 @@ export type ProcessorType = {
   id: number;
   processor: string;
 };
+
+export type CartType = {
+  id: number;
+  client_id: number;
+  item_id: number;
+  quantity: number;
+};
+
+export type OrderedItemsType = {
+  id: number;
+  client_id: number;
+  item_id: number;
+  quantity: number;
+  status: string;
+};
+
+export type OrdersType = {
+  name?: string;
+  color?: string;
+  memory?: number;
+  brand?: string;
+  processor?: string;
+  image?: string;
+  price?: number;
+  quantity?: number;
+  item_id?: number;
+  status?: string
+};
+
+export type PersonalInfoType = {
+  id: number;
+  name: string;
+  address: string;
+  phone: number;
+  email: string;
+  type: string
+};

@@ -18,21 +18,30 @@ const supabase = createClient<Database>(
     },
   }
 );
+
 export const dynamic = "force-dynamic";
 
-export async function GET() {
+
+export async function POST(request: Request) {
+  const data = await request.json();
+
   try {
-    const data = await supabase.from("tb_memory").select('*');
 
+    await supabase
+      .from("tb_cart")
+      .update({ quantity: data.quantity })
+      .eq("id", data.id);
 
-    return new Response(JSON.stringify({ message:data.data }), {
-      status: 200,
-      headers: { revalidate: dynamic },
-    });
+    return new Response(
+      JSON.stringify({ message: "The item added to the cart successfully" }),
+      {
+        headers: { "content-type": "application/json" },
+      }
+    );
   } catch (error) {
-    console.error("Error fetching files: ", error);
-    return new Response(JSON.stringify({ message: "An error occurred" }), {
-      status: 500,
+    return new Response(JSON.stringify({ message: "There is a problem" }), {
+      headers: { "content-type": "application/json" },
+      status: 400,
     });
   }
 }

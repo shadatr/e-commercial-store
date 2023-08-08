@@ -18,14 +18,19 @@ const supabase = createClient<Database>(
     },
   }
 );
+
 export const dynamic = "force-dynamic";
 
-export async function GET() {
+export async function GET(request: Request, { params }: { params: { name: string } }) {
   try {
-    const data = await supabase.from("tb_memory").select('*');
+    const data = await supabase
+      .from("tb_devices")
+      .select("*")
+      .eq("type", params.name);
 
+    console.log("hhhhhhhffvgffggfggffgfgfgfgffffgffgggfggffgffgfgfcfg");
 
-    return new Response(JSON.stringify({ message:data.data }), {
+    return new Response(JSON.stringify({ message: data.data }), {
       status: 200,
       headers: { revalidate: dynamic },
     });

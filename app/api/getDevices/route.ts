@@ -1,8 +1,22 @@
+import { Database } from "@/app/types/supabase";
 import { createClient } from "@supabase/supabase-js";
+import Cookies from "universal-cookie";
 
-const supabase = createClient(
+const cookies = new Cookies();
+
+const supabase = createClient<Database>(
   process.env.SUPABASE_URL || "",
-  process.env.SUPABASE_KEY || ""
+  process.env.SUPABASE_KEY || "",
+  {
+    auth: {
+      persistSession: true,
+      storage: {
+        getItem: (key) => cookies.get(key),
+        setItem: (key, value) => cookies.set(key, value, { path: "/" }),
+        removeItem: (key) => cookies.remove(key, { path: "/" }),
+      },
+    },
+  }
 );
 
 export const dynamic = "force-dynamic";

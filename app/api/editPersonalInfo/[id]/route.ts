@@ -18,14 +18,40 @@ const supabase = createClient<Database>(
     },
   }
 );
+
 export const dynamic = "force-dynamic";
 
-export async function GET() {
+
+export async function POST(request: Request, { params }: { params: { id: number } }) {
+  const data = await request.json();
+
   try {
-    const data = await supabase.from("tb_memory").select('*');
+
+    await supabase.from("tb_users").update( data ).eq("id", params.id);
+
+    return new Response(
+      JSON.stringify({ message: "The item added to the cart successfully" }),
+      {
+        headers: { "content-type": "application/json" },
+      }
+    );
+  } catch (error) {
+    return new Response(JSON.stringify({ message: "There is a problem" }), {
+      headers: { "content-type": "application/json" },
+      status: 400,
+    });
+  }
+}
 
 
-    return new Response(JSON.stringify({ message:data.data }), {
+export async function GET(request: Request, { params }: { params: { id: number } }) {
+  try {
+    const data = await supabase
+      .from("tb_users")
+      .select("*")
+      .eq("id", params.id);
+
+    return new Response(JSON.stringify({ message: data.data }), {
       status: 200,
       headers: { revalidate: dynamic },
     });

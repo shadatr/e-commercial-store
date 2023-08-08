@@ -23,10 +23,9 @@ export const dynamic = "force-dynamic";
 
 export async function GET() {
   try {
-    const data = await supabase.from("tb_device_properties").select("*");
+    const data = await supabase.from("tb_cart").select("*");
 
-
-    return new Response(JSON.stringify({ message:data.data }), {
+    return new Response(JSON.stringify({ message: data.data }), {
       status: 200,
       headers: { revalidate: dynamic },
     });
@@ -38,13 +37,22 @@ export async function GET() {
   }
 }
 
-
 export async function POST(request: Request) {
   const data = await request.json();
 
   try {
-    const res = await supabase.from("tb_cart").insert([data]);
-    console.log(res.error?.message);
+    const res = await supabase.from("tb_cart").insert([
+      {
+        client_id: data.client_id,
+        item_id: data.item_id,
+        quantity: data.quantity,
+      },
+    ]);
+
+    await supabase
+      .from("tb_device_properties")
+      .update({ quantity: data.left_items })
+      .eq("id", data.item_id);
 
     return new Response(
       JSON.stringify({ message: "The item added to the cart successfully" }),

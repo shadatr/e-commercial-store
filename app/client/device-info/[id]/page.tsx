@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import {
   BrandType,
+  CartType,
   ColorType,
   DeviceColorType,
   DeviceType,
@@ -12,8 +13,16 @@ import {
   PropType,
 } from "@/app/types/types";
 import { FaRegStar } from "react-icons/fa";
+import { useSession } from "next-auth/react";
+import { toast } from "react-toastify";
+import { redirect } from "next/navigation";
+import Link from "next/link";
 
 const Page = ({ params }: { params: { id: number } }) => {
+  const session = useSession();
+  const user = session.data?.user;
+
+  const [refresh, setRefresh] = useState<boolean>();
   const [images, setImages] = useState<ImageType[]>([]);
   const [devices, setDevices] = useState<DeviceType[]>([]);
   const [colors, setColors] = useState<ColorType[]>([]);
@@ -24,11 +33,16 @@ const Page = ({ params }: { params: { id: number } }) => {
   const [processors, setProcessors] = useState<ProcessorType[]>([]);
   const [selectedImage, setSelectedImage] = useState<ImageType>();
   const [quantity, setQuantity] = useState<number>(1);
+    const [cartItems, setCartItems] = useState<CartType[]>([]);
 
 
   useEffect(() => {
     async function downloadImages() {
       try {
+        const responseCart = await axios.get("/api/cart");
+        const dataCart: CartType[] = responseCart.data.message;
+        setCartItems(dataCart);
+
         const response = await axios.get("/api/getDevices");
         const data: DeviceType[] = response.data.message;
         setDevices(data);
@@ -66,16 +80,16 @@ const Page = ({ params }: { params: { id: number } }) => {
           (im) => im.id === prp?.device_color_id
         );
         const selectedImg = dataImg.find(
-          (im) => im.device_color_id === deviceColor?.id &&im.presentation==true
+          (im) =>
+            im.device_color_id === deviceColor?.id && im.presentation == true
         );
         setSelectedImage(selectedImg);
-        
       } catch (error) {
         console.log("Error downloading images: ", error);
       }
     }
     downloadImages();
-  }, []);
+  }, [refresh]);
 
   const prp = properties.find((im) => im.id == params.id);
   const deviceColor = deviceColors.find((im) => im.id === prp?.device_color_id);
@@ -84,12 +98,50 @@ const Page = ({ params }: { params: { id: number } }) => {
   const device = devices?.find((dev) => dev.id == deviceColor?.device_id);
   const brnd = brand.find((br) => br.id == device?.brand_id);
   const img = images.filter((im) => im.device_color_id === deviceColor?.id);
-
   const mmry = memory.find((mr) => mr.id === prp?.memory_id);
 
   const handleImageClick = (image: ImageType) => {
     setSelectedImage(image);
   };
+
+  const handleAddToCart = () => {
+    if (session.status == "unauthenticated") {
+      redirect("/auth/login");
+    }else{
+      const itemFound=cartItems.find((item)=> item.item_id==params.id&&user?.id==item.client_id);
+      if(itemFound){
+        const data = {
+          id: itemFound.id,
+          quantity: quantity+ itemFound.quantity
+        };
+        axios
+          .post("/api/addMoreFromTheItem", data)
+          .then(() => {
+            toast.success("Added to cart successfully");
+          })
+          .catch(() => {
+            toast.error("Error adding to cart");
+          });
+          return;
+      }
+      const data = {
+        client_id: user?.id,
+        item_id: params.id,
+        quantity: quantity,
+        left_items: prp ? prp?.quantity - quantity : 0,
+      };
+      axios
+        .post("/api/cart", data)
+        .then(() => {
+          toast.success("Added to cart successfully");
+        })
+        .catch(() => {
+          toast.error("Error adding to cart");
+        });
+      setRefresh(!refresh);
+    }
+  };
+
 
   return (
     <div className="m-10 flex">
@@ -159,9 +211,33 @@ const Page = ({ params }: { params: { id: number } }) => {
           <p className="text-xsm">Sub Total</p>
           <p className="text-sm font-bold">{prp?.price}$</p>
         </span>
-        <p className="font-bold bg-blue text-secondary flex justify-center items-center rounded-md p-2 m-2 w-[200px] cursor-pointer">Buy Now</p>
-        <p className="font-bold border border-blue text-blue flex justify-center items-center rounded-md p-2 m-2 w-[200px] cursor-pointer">Add To Cart</p>
-
+        {prp?.quantity ? (
+          <>
+            <p
+              onClick={handleAddToCart}
+              className="font-bold bg-blue text-secondary flex justify-center items-center rounded-md p-2 m-2 w-[200px] cursor-pointer"
+            >
+              <Link href={'/client/cart'}>
+              Buy Now
+              </Link>
+            </p>
+            <p
+              className="font-bold border border-blue text-blue flex justify-center items-center rounded-md p-2 m-2 w-[200px] cursor-pointer"
+              onClick={handleAddToCart}
+            >
+              Add To Cart
+            </p>
+          </>
+        ) : (
+          <>
+            <p className="font-bold bg-darkGray text-secondary flex justify-center items-center rounded-md p-2 m-2 w-[200px] ">
+              Buy Now
+            </p>
+            <p className="font-bold border border-lightGray text-lightGray flex justify-center items-center rounded-md p-2 m-2 w-[200px]">
+              Add To Cart
+            </p>
+          </>
+        )}
       </div>
     </div>
   );
