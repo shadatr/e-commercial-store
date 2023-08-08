@@ -3,6 +3,7 @@ import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import { signIn, useSession } from 'next-auth/react';
 import { toast } from 'react-toastify';
+import Link from 'next/link';
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
@@ -24,7 +25,7 @@ const LoginPage = () => {
       router.push("/");
     }
     if (result) {
-      toast.error(result.error);
+      
     } else {
       toast.success('Login successful!');
       router.push('/'); // Redirect to the home page upon successful login
@@ -61,11 +62,15 @@ const LoginPage = () => {
           />
         </div>
         <button
-          type="submit" // Set the button type to "submit" to trigger form submission
+          type="submit"
           className="lg:w-full bg-blue sm:w-[270px] text-white font-semibold px-4 py-2 rounded-md h-[50px]"
         >
           Login
         </button>
+        <p className="p-5">Don't have an account?</p>
+        <Link className="p-1 text-blue" href={"/auth/signup"}>
+          SignUp
+        </Link>
       </form>
     </div>
   );

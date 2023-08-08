@@ -31,7 +31,7 @@ const Page = ({ params }: { params: { name: string } }) => {
   const [checkedProcessor, setCheckedProcessor] = useState<number[]>([]);
   const [refresh, setRefresh] = useState<boolean>();
 
-  const session = useSession({ required: true });
+  const session = useSession();
   useEffect(() => {
     async function downloadImages() {
       try {

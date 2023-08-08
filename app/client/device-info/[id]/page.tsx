@@ -17,6 +17,8 @@ import { useSession } from "next-auth/react";
 import { toast } from "react-toastify";
 import { redirect } from "next/navigation";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+
 
 const Page = ({ params }: { params: { id: number } }) => {
   const session = useSession();
@@ -34,6 +36,7 @@ const Page = ({ params }: { params: { id: number } }) => {
   const [selectedImage, setSelectedImage] = useState<ImageType>();
   const [quantity, setQuantity] = useState<number>(1);
     const [cartItems, setCartItems] = useState<CartType[]>([]);
+  const router = useRouter();
 
 
   useEffect(() => {
@@ -106,7 +109,7 @@ const Page = ({ params }: { params: { id: number } }) => {
 
   const handleAddToCart = () => {
     if (session.status == "unauthenticated") {
-      redirect("/auth/login");
+      router.push("/auth/login");
     }else{
       const itemFound=cartItems.find((item)=> item.item_id==params.id&&user?.id==item.client_id);
       if(itemFound){

@@ -1,11 +1,13 @@
 import React from "react"
 import Image from "next/image";
 import Link from "next/link";
-import { useSession } from "next-auth/react";
-
+import Header from "./components/header";
+import Footer from "./components/footer";
 
 export default function Home() {
   return (
+    <div>
+      <Header/>
     <div className="flex flex-row">
       <Image src="/background.png" alt="Background" width={1000} height={300} />
       <span>
@@ -17,6 +19,8 @@ export default function Home() {
         Start Shopping
       </Link>
       </span>
+    </div>
+    <Footer/>
     </div>
   );
 }

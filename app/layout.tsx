@@ -16,15 +16,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <Head>
-        <script src="https://pay.google.com/gp/p/js/pay.js"></script>
-      </Head>
       <body>
         <SessionProvider session={session}>
-          <Header />
           {children}
         </SessionProvider>
-        <Footer />
         <ToastContainer position="bottom-right" autoClose={2000} rtl={true} />
       </body>
     </html>
