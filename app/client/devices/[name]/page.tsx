@@ -41,33 +41,34 @@ const Page = ({ params }: { params: { name: string } }) => {
           : data;
         setDevices(brandList);
 
+        
         const responseImg = await axios.get("/api/getImages");
         const dataImg: ImageType[] = responseImg.data.message;
         setImages(dataImg);
-
+        
         const responseProp = await axios.get("/api/getProps");
         const dataProp: PropType[] = responseProp.data.message;
-
+        
         const propsList2: PropType[] = dataProp
-          .filter((item) =>
-            checkedMemory.length ? checkedMemory.includes(item.memory_id) : true
-          )
-          .filter((item) =>
-            checkedProcessor.length
-              ? checkedProcessor.includes(item.processor_id)
-              : true
-          )
-          .filter((item) =>
-            maxPrice && minPrice
-              ? item.price <= maxPrice && item.price >= minPrice
-              : true
-          );
-
+        .filter((item) =>
+        checkedMemory.length ? checkedMemory.includes(item.memory_id) : true
+        )
+        .filter((item) =>
+        checkedProcessor.length
+        ? checkedProcessor.includes(item.processor_id)
+        : true
+        )
+        .filter((item) =>
+        maxPrice && minPrice
+        ? item.price <= maxPrice && item.price >= minPrice
+        : true
+        );
+        
         setProperties(propsList2);
-
+        
         const responseDevColor = await axios.get("/api/getDeviceColor");
         const dataColorDev: DeviceColorType[] = responseDevColor.data.message;
-
+        
         const ColorList: DeviceColorType[] = checkedColor.length
           ? dataColorDev.filter((brand) =>
               checkedColor.includes(brand.color_id)
@@ -237,8 +238,9 @@ const Page = ({ params }: { params: { name: string } }) => {
           const img = images.find(
             (im) => im.device_color_id === deviceColor?.id && im.presentation
           );
+          console.log(devices);
           const mmry = memory.find((mr) => mr.id === prp.memory_id);
-          if (device && brnd && img && mmry && device && color) {
+          if (device && brnd && img  && color) {
             return (
               <Device
                 key={index}

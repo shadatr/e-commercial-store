@@ -61,6 +61,12 @@ export type CartType = {
   quantity: number;
 };
 
+export type FavoritesType = {
+  id: number;
+  client_id: number;
+  item_id: number;
+};
+
 export type OrderedItemsType = {
   id: number;
   client_id: number;

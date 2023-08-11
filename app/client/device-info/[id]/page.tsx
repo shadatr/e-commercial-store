@@ -7,6 +7,7 @@ import {
   ColorType,
   DeviceColorType,
   DeviceType,
+  FavoritesType,
   ImageType,
   MemoryType,
   ProcessorType,
@@ -36,11 +37,16 @@ const Page = ({ params }: { params: { id: number } }) => {
   const [quantity, setQuantity] = useState<number>(1);
     const [cartItems, setCartItems] = useState<CartType[]>([]);
   const router = useRouter();
+  const [favorites, setFavorites] = useState<FavoritesType[]>([]);
 
 
   useEffect(() => {
     async function downloadImages() {
       try {
+        const responseFav = await axios.get("/api/favorites");
+        const dataFav: FavoritesType[] = responseFav.data.message;
+        setFavorites(dataFav);
+
         const responseCart = await axios.get("/api/cart");
         const dataCart: CartType[] = responseCart.data.message;
         setCartItems(dataCart);
@@ -144,6 +150,34 @@ const Page = ({ params }: { params: { id: number } }) => {
     }
   };
 
+  const handleAddToFavorites = () => {
+    if (session.status == "unauthenticated") {
+      router.push("/auth/login");
+    } else {
+      const itemFound = favorites.find(
+        (item) => item.item_id == params.id && user?.id == item.client_id
+      );
+      if (itemFound) {
+        
+            toast.success("This Item is Already in your favorites?");
+          
+        return;
+      }
+      const data = {
+        client_id: user?.id,
+        item_id: params.id,
+      };
+      axios
+        .post("/api/favorites", data)
+        .then(() => {
+          toast.success("Added to favorites successfully");
+        })
+        .catch(() => {
+          toast.error("Error adding to favorites");
+        });
+      setRefresh(!refresh);
+    }
+  };
 
   return (
     <div className="m-10 flex">
@@ -219,15 +253,20 @@ const Page = ({ params }: { params: { id: number } }) => {
               onClick={handleAddToCart}
               className="font-bold bg-blue text-secondary flex justify-center items-center rounded-md p-2 m-2 w-[200px] cursor-pointer"
             >
-              <Link href={'/client/cart'}>
-              Buy Now
-              </Link>
+              <Link href={"/client/cart"}>Buy Now</Link>
             </p>
             <p
               className="font-bold border border-blue text-blue flex justify-center items-center rounded-md p-2 m-2 w-[200px] cursor-pointer"
               onClick={handleAddToCart}
             >
               Add To Cart
+            </p>
+            <p
+              className="flex justify-items border-b items-center cursor-pointer"
+              onClick={handleAddToFavorites} 
+            >
+              <FaRegStar className="text-yellow-500" />
+              Add To favorites
             </p>
           </>
         ) : (
@@ -237,6 +276,13 @@ const Page = ({ params }: { params: { id: number } }) => {
             </p>
             <p className="font-bold border border-lightGray text-lightGray flex justify-center items-center rounded-md p-2 m-2 w-[200px]">
               Add To Cart
+            </p>
+            <p
+              className="flex justify-items border-b items-center cursor-pointer"
+              onClick={handleAddToFavorites}
+            >
+              <FaRegStar className="text-yellow-500" />
+              Add To favorites
             </p>
           </>
         )}
