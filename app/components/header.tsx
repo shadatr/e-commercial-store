@@ -153,7 +153,7 @@ const Header = () => {
               }}
             />
             <button
-              onClick={() => handleSearch(searchTerm)}
+              onClick={() => handleSearch(searchTerm||'')}
               className="w-[102px] h-[36px] rounded-[8px] bg-blue text-[20px] text-secondary m-2.5 "
             >
               Search
