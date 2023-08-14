@@ -30,32 +30,30 @@ const Header = () => {
   const [deviceColors, setDeviceColors] = useState<DeviceColorType[]>([]);
   const [properties, setProperties] = useState<PropType[]>([]);
   const [processors, setProcessors] = useState<ProcessorType[]>([]);
-  const [showResults, setShowResults] = useState(false); // State to track visibility of results
+  const [showResults, setShowResults] = useState(false);
 
   const inputRef = useRef<HTMLInputElement | null>(null);
 
-    useEffect(() => {
-      // Close results when clicking outside of the input
-      const handleOutsideClick = (event: MouseEvent) => {
-        if (
-          inputRef.current &&
-          !inputRef.current.contains(event.target as Node)
-        ) {
-          setShowResults(false);
-        }
-      };
+  useEffect(() => {
+    const handleOutsideClick = (event: MouseEvent) => {
+      if (
+        inputRef.current &&
+        !inputRef.current.contains(event.target as Node)
+      ) {
+        setShowResults(false);
+      }
+    };
 
-      document.addEventListener("mousedown", handleOutsideClick);
+    document.addEventListener("mousedown", handleOutsideClick);
 
-      return () => {
-        document.removeEventListener("mousedown", handleOutsideClick);
-      };
-    }, []);
+    return () => {
+      document.removeEventListener("mousedown", handleOutsideClick);
+    };
+  }, []);
 
   useEffect(() => {
     async function downloadImages() {
       try {
-        
         const response = await axios.get("/api/getDevices");
         const data: DeviceType[] = response.data.message;
         setDevices(data);
@@ -119,21 +117,18 @@ const Header = () => {
   });
 
   const handleSearch = (inputValue: string) => {
-    // Convert input value to lowercase for case-insensitive search
     const searchValue = inputValue?.toLowerCase();
 
-    // Perform the search logic here
     const filtered = Items.filter(
       (device) =>
         device?.name?.toLowerCase().includes(searchValue) ||
         device?.color?.toLowerCase().includes(searchValue) ||
-        device?.memory == parseInt(inputValue) || 
+        device?.memory == parseInt(inputValue) ||
         device?.processor?.toLowerCase().includes(searchValue)
     );
 
     setFilteredDevices(filtered);
   };
-
 
   return (
     <div>
@@ -153,7 +148,7 @@ const Header = () => {
               }}
             />
             <button
-              onClick={() => handleSearch(searchTerm||'')}
+              onClick={() => handleSearch(searchTerm || "")}
               className="w-[102px] h-[36px] rounded-[8px] bg-blue text-[20px] text-secondary m-2.5 "
             >
               Search

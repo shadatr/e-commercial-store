@@ -1,103 +1,40 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, {  useState } from "react";
 import axios from "axios";
 import {
-  BrandType,
-  CartType,
-  ColorType,
-  DeviceColorType,
-  DeviceType,
-  FavoritesType,
   ImageType,
-  MemoryType,
-  ProcessorType,
-  PropType,
 } from "@/app/types/types";
 import { FaRegStar } from "react-icons/fa";
 import { useSession } from "next-auth/react";
 import { toast } from "react-toastify";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useDataFetching } from "@/app/components/useDataFetching";
 
 
 const Page = ({ params }: { params: { id: number } }) => {
   const session = useSession();
   const user = session.data?.user;
-
-  const [refresh, setRefresh] = useState<boolean>();
-  const [images, setImages] = useState<ImageType[]>([]);
-  const [devices, setDevices] = useState<DeviceType[]>([]);
-  const [colors, setColors] = useState<ColorType[]>([]);
-  const [memory, setMemory] = useState<MemoryType[]>([]);
-  const [brand, setBrand] = useState<BrandType[]>([]);
-  const [deviceColors, setDeviceColors] = useState<DeviceColorType[]>([]);
-  const [properties, setProperties] = useState<PropType[]>([]);
-  const [processors, setProcessors] = useState<ProcessorType[]>([]);
-  const [selectedImage, setSelectedImage] = useState<ImageType>();
   const [quantity, setQuantity] = useState<number>(1);
-    const [cartItems, setCartItems] = useState<CartType[]>([]);
   const router = useRouter();
-  const [favorites, setFavorites] = useState<FavoritesType[]>([]);
 
+  const {
+    cartItems,
+    refresh,
+    images,
+    devices,
+    colors,
+    memory,
+    brand,
+    deviceColors,
+    properties,
+    processors,
+    selectedImage,
+    favorites,
+    setRefresh,
+    setSelectedImage,
+  } = useDataFetching(user?.id, params.id);
 
-  useEffect(() => {
-    async function downloadImages() {
-      try {
-        const responseFav = await axios.get("/api/favorites");
-        const dataFav: FavoritesType[] = responseFav.data.message;
-        setFavorites(dataFav);
-
-        const responseCart = await axios.get("/api/cart");
-        const dataCart: CartType[] = responseCart.data.message;
-        setCartItems(dataCart);
-
-        const response = await axios.get("/api/getDevices");
-        const data: DeviceType[] = response.data.message;
-        setDevices(data);
-
-        const responseImg = await axios.get("/api/getImages");
-        const dataImg: ImageType[] = responseImg.data.message;
-        setImages(dataImg);
-
-        const responseProp = await axios.get("/api/getProps");
-        const dataProp: PropType[] = responseProp.data.message;
-        setProperties(dataProp);
-
-        const responseDevColor = await axios.get("/api/getDeviceColor");
-        const dataColorDev: DeviceColorType[] = responseDevColor.data.message;
-        setDeviceColors(dataColorDev);
-
-        const responseColor = await axios.get("/api/getColors");
-        const dataColor: ColorType[] = responseColor.data.message;
-        setColors(dataColor);
-
-        const responseBrand = await axios.get("/api/getBrand");
-        const dataBrand: BrandType[] = responseBrand.data.message;
-        setBrand(dataBrand);
-
-        const responseMemory = await axios.get("/api/getMemory");
-        const dataMemory: MemoryType[] = responseMemory.data.message;
-        setMemory(dataMemory);
-
-        const responseProc = await axios.get("/api/getProcessor");
-        const dataPro: ProcessorType[] = responseProc.data.message;
-        setProcessors(dataPro);
-
-        const prp = dataProp.find((im) => im.id == params.id);
-        const deviceColor = dataColorDev.find(
-          (im) => im.id === prp?.device_color_id
-        );
-        const selectedImg = dataImg.find(
-          (im) =>
-            im.device_color_id === deviceColor?.id && im.presentation == true
-        );
-        setSelectedImage(selectedImg);
-      } catch (error) {
-        console.log("Error downloading images: ", error);
-      }
-    }
-    downloadImages();
-  }, [refresh]);
 
   const prp = properties.find((im) => im.id == params.id);
   const deviceColor = deviceColors.find((im) => im.id === prp?.device_color_id);

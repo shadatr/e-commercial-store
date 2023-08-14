@@ -1,99 +1,41 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import axios from "axios";
 import {
-  BrandType,
-  CartType,
-  ColorType,
-  DeviceColorType,
-  DeviceType,
-  ImageType,
-  MemoryType,
   OrdersType,
   PersonalInfoType,
-  ProcessorType,
-  PropType,
 } from "@/app/types/types";
 import { useSession } from "next-auth/react";
 import Order from "@/app/components/order";
 import { toast } from "react-toastify";
 import GooglePayButton from "@google-pay/button-react";
+import { useDataFetching } from "@/app/components/useDataFetching";
 
 function page() {
   const session = useSession({ required: true });
   const user = session.data?.user;
 
-  const [cartItems, setCartItems] = useState<CartType[]>([]);
-  const [refresh, setRefresh] = useState<boolean>();
-  const [userInfo, setUserInfo] = useState<PersonalInfoType[]>([]);
-  const [userInfo2, setUserInfo2] = useState<PersonalInfoType[]>([]);
-  const [images, setImages] = useState<ImageType[]>([]);
-  const [devices, setDevices] = useState<DeviceType[]>([]);
-  const [colors, setColors] = useState<ColorType[]>([]);
-  const [memory, setMemory] = useState<MemoryType[]>([]);
-  const [brand, setBrand] = useState<BrandType[]>([]);
-  const [deviceColors, setDeviceColors] = useState<DeviceColorType[]>([]);
-  const [properties, setProperties] = useState<PropType[]>([]);
-  const [processors, setProcessors] = useState<ProcessorType[]>([]);
-  const [shipping, setShipping] = useState<number>(20);
-  const [edit, setEdit] = useState<boolean>(false);
-  const [hasLoaded, setHasLoaded] = useState<boolean>(true);
+const {
+  cartItems,
+  refresh,
+  userInfo,
+  userInfo2,
+  images,
+  devices,
+  colors,
+  memory,
+  brand,
+  deviceColors,
+  properties,
+  processors,
+  shipping,
+  edit,
+  setRefresh,
+  setEdit,
+  setUserInfo2, 
+  setHasLoaded, 
+} = useDataFetching(user?.id);
 
-  useEffect(() => {
-    async function downloadImages() {
-      try {
-        const responseCart = await axios.get("/api/cart");
-        const dataCart: CartType[] = responseCart.data.message;
-        setCartItems(dataCart);
-
-        const response = await axios.get("/api/getDevices");
-        const data: DeviceType[] = response.data.message;
-        setDevices(data);
-
-        const responseImg = await axios.get("/api/getImages");
-        const dataImg: ImageType[] = responseImg.data.message;
-        setImages(dataImg);
-
-        const responseProp = await axios.get("/api/getProps");
-        const dataProp: PropType[] = responseProp.data.message;
-        setProperties(dataProp);
-
-        const responseDevColor = await axios.get("/api/getDeviceColor");
-        const dataColorDev: DeviceColorType[] = responseDevColor.data.message;
-        setDeviceColors(dataColorDev);
-
-        const responseColor = await axios.get("/api/getColors");
-        const dataColor: ColorType[] = responseColor.data.message;
-        setColors(dataColor);
-
-        const responseBrand = await axios.get("/api/getBrand");
-        const dataBrand: BrandType[] = responseBrand.data.message;
-        setBrand(dataBrand);
-
-        const responseMemory = await axios.get("/api/getMemory");
-        const dataMemory: MemoryType[] = responseMemory.data.message;
-        setMemory(dataMemory);
-
-        const responseProc = await axios.get("/api/getProcessor");
-        const dataPro: ProcessorType[] = responseProc.data.message;
-        setProcessors(dataPro);
-
-        if (user && hasLoaded) {
-          setHasLoaded(false);
-          const responseInfo = await axios.get(
-            `/api/editPersonalInfo/${user?.id}`
-          );
-          const dataInfo: PersonalInfoType[] = responseInfo.data.message;
-          setUserInfo(dataInfo);
-          setUserInfo2(dataInfo);
-        }
-      } catch (error) {
-        console.log("Error downloading images: ", error);
-      }
-    }
-    downloadImages();
-  }, [refresh, user, hasLoaded]);
 
   const clientItems: OrdersType[] = properties
     .filter(

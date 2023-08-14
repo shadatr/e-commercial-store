@@ -17,67 +17,25 @@ import {
 import { useSession } from "next-auth/react";
 import Order from "@/app/components/order";
 import { toast } from "react-toastify";
+import { useDataFetching } from "@/app/components/useDataFetching";
 
 function page() {
   const session = useSession({ required: true });
   const user = session.data?.user;
 
-  const [favorites, setFavorites] = useState<FavoritesType[]>([]);
-  const [refresh, setRefresh] = useState<boolean>();
-  const [images, setImages] = useState<ImageType[]>([]);
-  const [devices, setDevices] = useState<DeviceType[]>([]);
-  const [colors, setColors] = useState<ColorType[]>([]);
-  const [memory, setMemory] = useState<MemoryType[]>([]);
-  const [brand, setBrand] = useState<BrandType[]>([]);
-  const [deviceColors, setDeviceColors] = useState<DeviceColorType[]>([]);
-  const [properties, setProperties] = useState<PropType[]>([]);
-  const [processors, setProcessors] = useState<ProcessorType[]>([]);
-
-  useEffect(() => {
-    async function downloadImages() {
-      try {
-        const responseFav = await axios.get("/api/favorites");
-        const dataFav: FavoritesType[] = responseFav.data.message;
-        setFavorites(dataFav);
-
-        const response = await axios.get("/api/getDevices");
-        const data: DeviceType[] = response.data.message;
-        setDevices(data);
-
-        const responseImg = await axios.get("/api/getImages");
-        const dataImg: ImageType[] = responseImg.data.message;
-        setImages(dataImg);
-
-        const responseProp = await axios.get("/api/getProps");
-        const dataProp: PropType[] = responseProp.data.message;
-        setProperties(dataProp);
-
-        const responseDevColor = await axios.get("/api/getDeviceColor");
-        const dataColorDev: DeviceColorType[] = responseDevColor.data.message;
-        setDeviceColors(dataColorDev);
-
-        const responseColor = await axios.get("/api/getColors");
-        const dataColor: ColorType[] = responseColor.data.message;
-        setColors(dataColor);
-
-        const responseBrand = await axios.get("/api/getBrand");
-        const dataBrand: BrandType[] = responseBrand.data.message;
-        setBrand(dataBrand);
-
-        const responseMemory = await axios.get("/api/getMemory");
-        const dataMemory: MemoryType[] = responseMemory.data.message;
-        setMemory(dataMemory);
-
-        const responseProc = await axios.get("/api/getProcessor");
-        const dataPro: ProcessorType[] = responseProc.data.message;
-        setProcessors(dataPro);
-
-      } catch (error) {
-        console.log("Error downloading images: ", error);
-      }
-    }
-    downloadImages();
-  }, [refresh, user]);
+    const {
+      refresh,
+      images,
+      devices,
+      colors,
+      memory,
+      brand,
+      deviceColors,
+      properties,
+      processors,
+      favorites,
+      setRefresh,
+    } = useDataFetching(user?.id);
 
   const clientItems: OrdersType[] = properties
     .filter(

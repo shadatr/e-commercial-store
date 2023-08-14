@@ -1,82 +1,35 @@
 "use client";
 import { useSession } from "next-auth/react";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import axios from "axios";
-import { BrandType, ColorType, DeviceColorType, DeviceType, ImageType, MemoryType, OrderedItemsType, OrdersType, PersonalInfoType, ProcessorType, PropType } from "@/app/types/types";
+import { OrdersType, PersonalInfoType } from "@/app/types/types";
 import { toast } from "react-toastify";
 import OrderedItem from "@/app/components/orderedItem";
+import { useDataFetching } from "@/app/components/useDataFetching";
 
 const page = () => {
   const [activeTab, setActiveTab] = useState<string>("Tab 1");
   const session = useSession({ required: true });
   const user = session.data?.user;
-  const [userInfo, setUserInfo] = useState<PersonalInfoType[]>([]);
-  const [orders, setorders] = useState<OrderedItemsType[]>([]);
-  const [userInfo2, setUserInfo2] = useState<PersonalInfoType[]>([]);
-  const [edit, setEdit] = useState<boolean>(false);
-  const [hasLoaded, setHasLoaded] = useState<boolean>(true);
-  const [images, setImages] = useState<ImageType[]>([]);
-  const [devices, setDevices] = useState<DeviceType[]>([]);
-  const [colors, setColors] = useState<ColorType[]>([]);
-  const [memory, setMemory] = useState<MemoryType[]>([]);
-  const [brand, setBrand] = useState<BrandType[]>([]);
-  const [deviceColors, setDeviceColors] = useState<DeviceColorType[]>([]);
-  const [properties, setProperties] = useState<PropType[]>([]);
-  const [processors, setProcessors] = useState<ProcessorType[]>([]);
 
-  useEffect(() => {
-    async function downloadImages() {
-      try {
-        const response = await axios.get("/api/order");
-        const data: OrderedItemsType[] = response.data.message;
-        setorders(data);
+  const {
+    orders,
+    userInfo,
+    userInfo2,
+    images,
+    devices,
+    colors,
+    memory,
+    brand,
+    deviceColors,
+    properties,
+    processors,
+    edit,
+    setEdit,
+    setUserInfo2,
+    setHasLoaded,
+  } = useDataFetching(user?.id);
 
-        const responseDev = await axios.get("/api/getDevices");
-        const dataDev: DeviceType[] = responseDev.data.message;
-        setDevices(dataDev);
-
-        const responseImg = await axios.get("/api/getImages");
-        const dataImg: ImageType[] = responseImg.data.message;
-        setImages(dataImg);
-
-        const responseProp = await axios.get("/api/getProps");
-        const dataProp: PropType[] = responseProp.data.message;
-        setProperties(dataProp);
-
-        const responseDevColor = await axios.get("/api/getDeviceColor");
-        const dataColorDev: DeviceColorType[] = responseDevColor.data.message;
-        setDeviceColors(dataColorDev);
-
-        const responseColor = await axios.get("/api/getColors");
-        const dataColor: ColorType[] = responseColor.data.message;
-        setColors(dataColor);
-
-        const responseBrand = await axios.get("/api/getBrand");
-        const dataBrand: BrandType[] = responseBrand.data.message;
-        setBrand(dataBrand);
-
-        const responseMemory = await axios.get("/api/getMemory");
-        const dataMemory: MemoryType[] = responseMemory.data.message;
-        setMemory(dataMemory);
-
-        const responseProc = await axios.get("/api/getProcessor");
-        const dataPro: ProcessorType[] = responseProc.data.message;
-        setProcessors(dataPro);
-        if (user && hasLoaded) {
-          setHasLoaded(false);
-          const responseInfo = await axios.get(
-            `/api/editPersonalInfo/${user?.id}`
-          );
-          const dataInfo: PersonalInfoType[] = responseInfo.data.message;
-          setUserInfo(dataInfo);
-          setUserInfo2(dataInfo);
-        }
-      } catch (error) {
-        console.log("Error downloading images: ", error);
-      }
-    }
-    downloadImages();
-  }, [user, hasLoaded]);
 
   const handleTabClick = (tab: string) => {
     setActiveTab(tab);
