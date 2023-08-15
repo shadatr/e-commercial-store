@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useState, useEffect } from "react";
 import axios from "axios";
 import {
@@ -127,9 +128,6 @@ export function useDataFetching(
             im.device_color_id === deviceColor?.id && im.presentation == true
         );
         setSelectedImage(selectedImg);
-
-        console.log(responseImg.data.message);
-        console.log(responseDevColor.data.message);
 
         if (user_id && hasLoaded) {
           setHasLoaded(false);
