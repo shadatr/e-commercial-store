@@ -29,7 +29,7 @@ const Order = ({ order,handleDeleteOrder }: { order?: OrdersType, handleDeleteOr
             {order?.color} | {order?.memory}GB | {order?.processor}
           </h1>
           <h1 className="font-medium text-sm">
-            ${order?.price && order?.quantity&&order?.price * order?.quantity}
+            ${order?.price }
           </h1>
         </div>
       </Link>

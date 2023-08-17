@@ -1,16 +1,18 @@
 "use client";
 import { useSession } from "next-auth/react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { OrdersType, PersonalInfoType } from "@/app/types/types";
 import { toast } from "react-toastify";
 import OrderedItem from "@/app/components/orderedItem";
 import { useDataFetching } from "@/app/components/useDataFetching";
+import LoadingIcons from "react-loading-icons";
 
 const page = () => {
   const [activeTab, setActiveTab] = useState<string>("Tab 1");
   const session = useSession({ required: true });
   const user = session.data?.user;
+  const [loading, setLoading] = useState<boolean>(true);
 
   const {
     orders,
@@ -30,6 +32,18 @@ const page = () => {
     setHasLoaded,
   } = useDataFetching(user?.id);
 
+  useEffect(() => {
+    if (
+      images.length > 0 &&
+      devices.length > 0 &&
+      colors.length > 0 &&
+      brand.length > 0 &&
+      deviceColors.length > 0 &&
+      properties.length > 0
+    ) {
+      setLoading(false);
+    }
+  }, [images, devices, colors, memory, brand, deviceColors, properties]);
 
   const handleTabClick = (tab: string) => {
     setActiveTab(tab);
@@ -57,7 +71,6 @@ const page = () => {
     setHasLoaded(true);
     setEdit(!edit);
   };
-
 
   const clientItems: OrdersType[] = properties
     .filter(
@@ -100,115 +113,124 @@ const page = () => {
         )?.status,
       };
     });
-    
+
   return (
-    <div className="flex w-full justify-center items-center flex-col">
-      <div className="text-sm flex flex-row space-x-4 p-5">
-        <button
-          onClick={() => handleTabClick("Tab 1")}
-          className={`py-2 px-4 rounded-md border ${
-            activeTab === "Tab 1"
-              ? "bg-blue-500 text-blue border-blue"
-              : "bg-gray-300 text-darkGray border-lightGray"
-          }`}
-        >
-          Personal Information
-        </button>
-        <button
-          onClick={() => handleTabClick("Tab 2")}
-          className={`py-2 px-4 rounded-md border ${
-            activeTab === "Tab 2"
-              ? "bg-blue-500 text-blue border-blue"
-              : "bg-gray-300 text-darkGray border-lightGray"
-          }`}
-        >
-          My Orders
-        </button>
-      </div>
-      {activeTab == "Tab 1" && (
-        <div className="border border-lightGray w-[1000px] p-10 rounded-2xl">
-          <div className="flex w-full justify-between">
-            {edit && userInfo ? (
-              <div className="flex flex-col">
-                <span className="flex justify-between items-center p-2">
-                  <p className="font-semibold ">Name And Surname</p>
-                  <input
-                    value={userInfo2[0]?.name}
-                    placeholder="name and surname"
-                    className=" py-2 px-4 border border-lightGray w-[400px] rounded-xl"
-                    onChange={(e) => handleInputChange(e, "name")}
-                  />
-                </span>
-                <span className="flex justify-between items-center p-2">
-                  <p className="font-semibold ">Phone</p>
-                  <input
-                    value={userInfo2[0]?.phone}
-                    placeholder="phone"
-                    className=" py-2 px-4 border border-lightGray w-[400px] rounded-xl"
-                    onChange={(e) => handleInputChange(e, "phone")}
-                  />
-                </span>
-                <span className="flex justify-between items-center p-2">
-                  <p className="font-semibold">Address</p>
-                  <input
-                    value={userInfo2[0]?.address}
-                    placeholder="address"
-                    className=" py-2 px-4 border border-lightGray w-[400px] rounded-xl"
-                    onChange={(e) => handleInputChange(e, "address")}
-                  />
-                </span>
-                <span className="flex justify-between items-center p-2">
-                  <p className="font-semibold">Email</p>
-                  <input
-                    value={userInfo2[0]?.email}
-                    placeholder="email"
-                    className=" py-2 px-4  border border-lightGray w-[400px] rounded-xl"
-                    onChange={(e) => handleInputChange(e, "email")}
-                  />
-                </span>
-              </div>
-            ) : (
-              <div className="w-[700px]">
-                <span className="flex justify-between p-2">
-                  <p className="font-semibold ">Name And Surname</p>
-                  <h1>{userInfo && userInfo[0]?.name}</h1>
-                </span>
-                <span className="flex justify-between p-2">
-                  <p className="font-semibold ">Phone</p>
-                  <h1>{userInfo && userInfo[0]?.phone}</h1>
-                </span>
-                <span className="flex justify-between p-2">
-                  <p className="font-semibold ">Address</p>
-                  <h1>{userInfo && userInfo[0]?.address}</h1>
-                </span>
-                <span className="flex justify-between p-2">
-                  <p className="font-semibold ">Email</p>
-                  <h1>{userInfo && userInfo[0]?.email}</h1>
-                </span>
-              </div>
-            )}
+    <div>
+      {loading ? (
+        <div className=" flex w-screen h-[400px] justify-center items-center ">
+          <LoadingIcons.ThreeDots stroke="blue" />
+          <h1 className="text-sm font-bold px-4">loading...</h1>
+        </div>
+      ) : (
+        <div className="flex w-full justify-center items-center flex-col">
+          <div className="text-sm flex flex-row space-x-4 p-5">
             <button
-              className="border border-blue px-4 py-2 font-medium text-blue rounded-xl h-[45px]"
-              onClick={() => (edit ? handleChangeInfo() : setEdit(!edit))}
+              onClick={() => handleTabClick("Tab 1")}
+              className={`py-2 px-4 rounded-md border ${
+                activeTab === "Tab 1"
+                  ? "bg-blue-500 text-blue border-blue"
+                  : "bg-gray-300 text-darkGray border-lightGray"
+              }`}
             >
-              {edit ? "save changes" : "Edit"}
+              Personal Information
+            </button>
+            <button
+              onClick={() => handleTabClick("Tab 2")}
+              className={`py-2 px-4 rounded-md border ${
+                activeTab === "Tab 2"
+                  ? "bg-blue-500 text-blue border-blue"
+                  : "bg-gray-300 text-darkGray border-lightGray"
+              }`}
+            >
+              My Orders
             </button>
           </div>
+          {activeTab == "Tab 1" && (
+            <div className="border border-lightGray w-[1000px] p-10 rounded-2xl">
+              <div className="flex w-full justify-between">
+                {edit && userInfo ? (
+                  <div className="flex flex-col">
+                    <span className="flex justify-between items-center p-2">
+                      <p className="font-semibold ">Name And Surname</p>
+                      <input
+                        value={userInfo2[0]?.name}
+                        placeholder="name and surname"
+                        className=" py-2 px-4 border border-lightGray w-[400px] rounded-xl"
+                        onChange={(e) => handleInputChange(e, "name")}
+                      />
+                    </span>
+                    <span className="flex justify-between items-center p-2">
+                      <p className="font-semibold ">Phone</p>
+                      <input
+                        value={userInfo2[0]?.phone}
+                        placeholder="phone"
+                        className=" py-2 px-4 border border-lightGray w-[400px] rounded-xl"
+                        onChange={(e) => handleInputChange(e, "phone")}
+                      />
+                    </span>
+                    <span className="flex justify-between items-center p-2">
+                      <p className="font-semibold">Address</p>
+                      <input
+                        value={userInfo2[0]?.address}
+                        placeholder="address"
+                        className=" py-2 px-4 border border-lightGray w-[400px] rounded-xl"
+                        onChange={(e) => handleInputChange(e, "address")}
+                      />
+                    </span>
+                    <span className="flex justify-between items-center p-2">
+                      <p className="font-semibold">Email</p>
+                      <input
+                        value={userInfo2[0]?.email}
+                        placeholder="email"
+                        className=" py-2 px-4  border border-lightGray w-[400px] rounded-xl"
+                        onChange={(e) => handleInputChange(e, "email")}
+                      />
+                    </span>
+                  </div>
+                ) : (
+                  <div className="w-[700px]">
+                    <span className="flex justify-between p-2">
+                      <p className="font-semibold ">Name And Surname</p>
+                      <h1>{userInfo && userInfo[0]?.name}</h1>
+                    </span>
+                    <span className="flex justify-between p-2">
+                      <p className="font-semibold ">Phone</p>
+                      <h1>{userInfo && userInfo[0]?.phone}</h1>
+                    </span>
+                    <span className="flex justify-between p-2">
+                      <p className="font-semibold ">Address</p>
+                      <h1>{userInfo && userInfo[0]?.address}</h1>
+                    </span>
+                    <span className="flex justify-between p-2">
+                      <p className="font-semibold ">Email</p>
+                      <h1>{userInfo && userInfo[0]?.email}</h1>
+                    </span>
+                  </div>
+                )}
+                <button
+                  className="border border-blue px-4 py-2 font-medium text-blue rounded-xl h-[45px]"
+                  onClick={() => (edit ? handleChangeInfo() : setEdit(!edit))}
+                >
+                  {edit ? "save changes" : "Edit"}
+                </button>
+              </div>
+            </div>
+          )}
+          {activeTab == "Tab 2" && (
+            <div className="border border-lightGray p-5  w-[1000px] rounded-2xl">
+              {clientItems &&
+                clientItems.map((item, index) => (
+                  <OrderedItem key={index} order={item} />
+                ))}
+              {!clientItems.length && (
+                <h1 className="text-sm text-darkGray font-bold flex items-center justify-center p-5">
+                  You have not ordered anything yet!
+                </h1>
+              )}
+            </div>
+          )}
         </div>
       )}
-      {activeTab== 'Tab 2'&&(<div className="border border-lightGray p-5  w-[1000px] rounded-2xl">
-          {clientItems &&
-            clientItems.map((item,index) => (
-              <OrderedItem
-              key={index}
-                order={item}
-              />
-            ))}
-          {!clientItems.length && (
-            <h1 className="text-sm text-darkGray font-bold flex items-center justify-center p-5">
-              You have not ordered anything yet!
-            </h1>
-          )}</div>)}
     </div>
   );
 };

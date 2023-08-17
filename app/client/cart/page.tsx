@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import {
   OrdersType,
@@ -10,10 +10,12 @@ import Order from "@/app/components/order";
 import { toast } from "react-toastify";
 import GooglePayButton from "@google-pay/button-react";
 import { useDataFetching } from "@/app/components/useDataFetching";
+import LoadingIcons from "react-loading-icons";
 
 function page() {
   const session = useSession({ required: true });
   const user = session.data?.user;
+  const [loading, setLoading] = useState<boolean>(true);
 
 const {
   cartItems,
@@ -36,6 +38,27 @@ const {
   setHasLoaded, 
 } = useDataFetching(user?.id);
 
+  useEffect(() => {
+    if (
+      images.length > 0 &&
+      devices.length > 0 &&
+      colors.length > 0 &&
+      brand.length > 0 &&
+      deviceColors.length > 0 &&
+      properties.length > 0 
+    ) {
+      setLoading(false);
+    }
+  }, [
+    cartItems,
+    images,
+    devices,
+    colors,
+    memory,
+    brand,
+    deviceColors,
+    properties,
+  ]);
 
   const clientItems: OrdersType[] = properties
     .filter(
@@ -95,7 +118,7 @@ const {
     } catch {
       toast.success("Somthing went wrong while deleting the item");
     }
-    setRefresh(refresh);
+    setRefresh(!refresh);
   };
 
   const handleChangeAddress = () => {
@@ -105,7 +128,7 @@ const {
     } catch {
       toast.success("Somthing went wrong while editing");
     }
-    setRefresh(refresh);
+    setRefresh(!refresh);
     setHasLoaded(true);
     setEdit(!edit);
   };
@@ -151,159 +174,171 @@ const {
   };
 
   return (
-    <div className="my-10 mx-16 flex">
-      <div>
-        <h1 className="text-sm text-darkGray font-bold p-1">Your Items</h1>
-        <div className="border border-lightGray p-5  w-[1000px] rounded-2xl">
-          {clientItems &&
-            clientItems.map((item,index) => (
-              <Order key={index}
-                handleDeleteOrder={() =>
-                  handleDeleteOrder(
-                    cartItems.find(
-                      (i) =>
-                        i.item_id == item.item_id && i.client_id == user?.id
-                    )?.id
-                  )
-                }
-                order={item}
+    <div>
+      {loading ? (
+        <div className=" flex w-screen h-[400px] justify-center items-center ">
+          <LoadingIcons.ThreeDots stroke="blue" />
+          <h1 className="text-sm font-bold px-4">loading...</h1>
+        </div>
+      ) : (
+        <div className="my-10 mx-16 flex">
+          <div>
+            <h1 className="text-sm text-darkGray font-bold p-1">Your Items</h1>
+            <div className="border border-lightGray p-5  w-[1000px] rounded-2xl">
+              {clientItems &&
+                clientItems.map((item, index) => (
+                  <Order
+                    key={index}
+                    handleDeleteOrder={() =>
+                      handleDeleteOrder(
+                        cartItems.find(
+                          (i) =>
+                            i.item_id == item.item_id && i.client_id == user?.id
+                        )?.id
+                      )
+                    }
+                    order={item}
+                  />
+                ))}
+              {!clientItems.length && (
+                <h1 className="text-sm text-darkGray font-bold flex items-center justify-center p-5">
+                  You have not added any items to your cart yet!
+                </h1>
+              )}
+              <div className="border-t-[1px] width-[900px] p-2 border-lightGray"></div>
+              <div className="flex w-full justify-between">
+                {edit && userInfo ? (
+                  <div className="flex flex-col">
+                    <h1 className="text-sm my-3 text-darkGray font-bold py-3">
+                      Delivery Information
+                    </h1>
+                    <input
+                      value={userInfo2[0]?.name}
+                      placeholder="name and surname"
+                      className=" py-2 px-4 my-3 border border-lightGray w-[400px] rounded-xl"
+                      onChange={(e) => handleInputChange(e, "name")}
+                    />
+                    <input
+                      value={userInfo2[0]?.phone}
+                      placeholder="phone"
+                      className=" py-2 px-4 border border-lightGray w-[400px] rounded-xl"
+                      onChange={(e) => handleInputChange(e, "phone")}
+                    />
+                    <input
+                      value={userInfo2[0]?.address}
+                      placeholder="address"
+                      className=" py-2 px-4 my-3 border border-lightGray w-[400px] rounded-xl"
+                      onChange={(e) => handleInputChange(e, "address")}
+                    />
+                    <h1 className=" pt-8 font-medium">Estimated in 3 days</h1>
+                  </div>
+                ) : (
+                  <div>
+                    <h1 className="text-sm text-darkGray font-bold py-3">
+                      Delivery Information
+                    </h1>
+                    <h1 className="font-bold py-1">
+                      {userInfo && userInfo[0]?.name}
+                    </h1>
+                    <h1 className=" text-darkGray">
+                      {userInfo && userInfo[0]?.phone}
+                    </h1>
+                    <h1 className=" text-darkGray py-3">
+                      {userInfo && userInfo[0]?.address}
+                    </h1>
+                    <h1 className=" pt-8 font-medium">Estimated in 3 days</h1>
+                  </div>
+                )}
+                <button
+                  className="border border-blue px-4 py-2 font-medium text-blue rounded-xl h-[45px]"
+                  onClick={() =>
+                    edit ? handleChangeAddress() : setEdit(!edit)
+                  }
+                >
+                  {edit ? "save changes" : "Edit Address"}
+                </button>
+              </div>
+            </div>
+          </div>
+          <div className="border border-lightGray w-[250px] h-[300px] rounded-2xl ml-10 p-1">
+            <h1 className="font-semibold py-3 px-4">Order Summary</h1>
+            <span className="text-darkGray flex justify-between px-4">
+              <p>Sub Total</p>
+              <p>${total}</p>
+            </span>
+            <span className="text-darkGray flex justify-between px-4">
+              <p>Shipping</p>
+              <p>${shipping}</p>
+            </span>
+            <span className="text-darkGray flex justify-between px-4">
+              <p>Tax(10%)</p>
+              <p>${((total + shipping) * 10) / 100}</p>
+            </span>
+            <div className="border-t-[1px] width-[200px] m-4 border-lightGray" />
+            <span className="font-bold text-sm flex justify-between px-4">
+              <p>Total</p>
+              <p>${((total + shipping) * 10) / 100 + shipping + total}</p>
+            </span>
+            {clientItems.length != 0 && (
+              <GooglePayButton
+                className="w-full py-4"
+                environment="TEST"
+                paymentRequest={{
+                  apiVersion: 2,
+                  apiVersionMinor: 0,
+                  allowedPaymentMethods: [
+                    {
+                      type: "CARD",
+                      parameters: {
+                        allowedAuthMethods: ["PAN_ONLY", "CRYPTOGRAM_3DS"],
+                        allowedCardNetworks: ["MASTERCARD", "VISA"],
+                      },
+                      tokenizationSpecification: {
+                        type: "PAYMENT_GATEWAY",
+                        parameters: {
+                          gateway: "example",
+                          gatewayMerchantId: "exampleGatewayMerchantId",
+                        },
+                      },
+                    },
+                  ],
+                  merchantInfo: {
+                    merchantId: "12345678901234567890",
+                    merchantName: "Demo Merchant",
+                  },
+                  transactionInfo: {
+                    totalPriceStatus: "FINAL",
+                    totalPriceLabel: "Total",
+                    totalPrice: "0",
+                    currencyCode: "USD",
+                    countryCode: "US",
+                  },
+                }}
+                onLoadPaymentData={(paymentData) => {
+                  // Check the actual structure of paymentData
+                  if (paymentData.paymentMethodData?.tokenizationData?.token) {
+                    // Payment is successful, call handlePaymentAuthorized
+                    handlePaymentAuthorized(paymentData);
+                    return {
+                      transactionState: "SUCCESS",
+                    };
+                  } else {
+                    // Payment failed, return an error state
+                    return {
+                      transactionState: "ERROR",
+                      error: {
+                        reason: "PAYMENT_FAILED",
+                        message: "Payment authorization failed",
+                        intent: "PAYMENT_AUTHORIZATION",
+                      },
+                    };
+                  }
+                }}
               />
-            ))}
-          {!clientItems.length && (
-            <h1 className="text-sm text-darkGray font-bold flex items-center justify-center p-5">
-              You have not added any items to your cart yet!
-            </h1>
-          )}
-          <div className="border-t-[1px] width-[900px] p-2 border-lightGray"></div>
-          <div className="flex w-full justify-between">
-            {edit && userInfo ? (
-              <div className="flex flex-col">
-                <h1 className="text-sm my-3 text-darkGray font-bold py-3">
-                  Delivery Information
-                </h1>
-                <input
-                  value={userInfo2[0]?.name}
-                  placeholder="name and surname"
-                  className=" py-2 px-4 my-3 border border-lightGray w-[400px] rounded-xl"
-                  onChange={(e) => handleInputChange(e, "name")}
-                />
-                <input
-                  value={userInfo2[0]?.phone}
-                  placeholder="phone"
-                  className=" py-2 px-4 border border-lightGray w-[400px] rounded-xl"
-                  onChange={(e) => handleInputChange(e, "phone")}
-                />
-                <input
-                  value={userInfo2[0]?.address}
-                  placeholder="address"
-                  className=" py-2 px-4 my-3 border border-lightGray w-[400px] rounded-xl"
-                  onChange={(e) => handleInputChange(e, "address")}
-                />
-                <h1 className=" pt-8 font-medium">Estimated in 3 days</h1>
-              </div>
-            ) : (
-              <div>
-                <h1 className="text-sm text-darkGray font-bold py-3">
-                  Delivery Information
-                </h1>
-                <h1 className="font-bold py-1">
-                  {userInfo && userInfo[0]?.name}
-                </h1>
-                <h1 className=" text-darkGray">
-                  {userInfo && userInfo[0]?.phone}
-                </h1>
-                <h1 className=" text-darkGray py-3">
-                  {userInfo && userInfo[0]?.address}
-                </h1>
-                <h1 className=" pt-8 font-medium">Estimated in 3 days</h1>
-              </div>
             )}
-            <button
-              className="border border-blue px-4 py-2 font-medium text-blue rounded-xl h-[45px]"
-              onClick={() => (edit ? handleChangeAddress() : setEdit(!edit))}
-            >
-              {edit ? "save changes" : "Edit Address"}
-            </button>
           </div>
         </div>
-      </div>
-      <div className="border border-lightGray w-[250px] h-[300px] rounded-2xl ml-10 p-1">
-        <h1 className="font-semibold py-3 px-4">Order Summary</h1>
-        <span className="text-darkGray flex justify-between px-4">
-          <p>Sub Total</p>
-          <p>${total}</p>
-        </span>
-        <span className="text-darkGray flex justify-between px-4">
-          <p>Shipping</p>
-          <p>${shipping}</p>
-        </span>
-        <span className="text-darkGray flex justify-between px-4">
-          <p>Tax(10%)</p>
-          <p>${((total + shipping) * 10) / 100}</p>
-        </span>
-        <div className="border-t-[1px] width-[200px] m-4 border-lightGray" />
-        <span className="font-bold text-sm flex justify-between px-4">
-          <p>Total</p>
-          <p>${((total + shipping) * 10) / 100 + shipping + total}</p>
-        </span>
-        {clientItems.length != 0 && (
-          <GooglePayButton
-            className="w-full py-4"
-            environment="TEST"
-            paymentRequest={{
-              apiVersion: 2,
-              apiVersionMinor: 0,
-              allowedPaymentMethods: [
-                {
-                  type: "CARD",
-                  parameters: {
-                    allowedAuthMethods: ["PAN_ONLY", "CRYPTOGRAM_3DS"],
-                    allowedCardNetworks: ["MASTERCARD", "VISA"],
-                  },
-                  tokenizationSpecification: {
-                    type: "PAYMENT_GATEWAY",
-                    parameters: {
-                      gateway: "example",
-                      gatewayMerchantId: "exampleGatewayMerchantId",
-                    },
-                  },
-                },
-              ],
-              merchantInfo: {
-                merchantId: "12345678901234567890",
-                merchantName: "Demo Merchant",
-              },
-              transactionInfo: {
-                totalPriceStatus: "FINAL",
-                totalPriceLabel: "Total",
-                totalPrice: "0",
-                currencyCode: "USD",
-                countryCode: "US",
-              },
-            }}
-            onLoadPaymentData={(paymentData) => {
-              // Check the actual structure of paymentData
-              if (paymentData.paymentMethodData?.tokenizationData?.token) {
-                // Payment is successful, call handlePaymentAuthorized
-                handlePaymentAuthorized(paymentData);
-                return {
-                  transactionState: "SUCCESS",
-                };
-              } else {
-                // Payment failed, return an error state
-                return {
-                  transactionState: "ERROR",
-                  error: {
-                    reason: "PAYMENT_FAILED",
-                    message: "Payment authorization failed",
-                    intent: "PAYMENT_AUTHORIZATION",
-                  },
-                };
-              }
-            }}
-          />
-        )}
-      </div>
+      )}
     </div>
   );
 }

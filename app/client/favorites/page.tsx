@@ -1,41 +1,44 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import {
-  BrandType,
-  ColorType,
-  DeviceColorType,
-  DeviceType,
-  FavoritesType,
-  ImageType,
-  MemoryType,
-  OrdersType,
-  ProcessorType,
-  PropType,
-} from "@/app/types/types";
+import { OrdersType } from "@/app/types/types";
 import { useSession } from "next-auth/react";
 import Order from "@/app/components/order";
 import { toast } from "react-toastify";
 import { useDataFetching } from "@/app/components/useDataFetching";
+import LoadingIcons from "react-loading-icons";
 
 function page() {
   const session = useSession({ required: true });
   const user = session.data?.user;
+  const [loading, setLoading] = useState<boolean>(true);
 
-    const {
-      refresh,
-      images,
-      devices,
-      colors,
-      memory,
-      brand,
-      deviceColors,
-      properties,
-      processors,
-      favorites,
-      setRefresh,
-    } = useDataFetching(user?.id);
+  const {
+    refresh,
+    images,
+    devices,
+    colors,
+    memory,
+    brand,
+    deviceColors,
+    properties,
+    processors,
+    favorites,
+    setRefresh,
+  } = useDataFetching(user?.id);
+
+  useEffect(() => {
+    if (
+      images.length > 0 &&
+      devices.length > 0 &&
+      colors.length > 0 &&
+      brand.length > 0 &&
+      deviceColors.length > 0 &&
+      properties.length > 0
+    ) {
+      setLoading(false);
+    }
+  }, [images, devices, colors, memory, brand, deviceColors, properties]);
 
   const clientItems: OrdersType[] = properties
     .filter(
@@ -77,39 +80,46 @@ function page() {
     try {
       axios.post("/api/favorites/deleteItem", item_id);
       toast.success("The item deleted successfully");
+      setRefresh(!refresh);
     } catch {
       toast.success("Somthing went wrong while deleting the item");
     }
-    setRefresh(refresh);
   };
 
   return (
-    <div className="my-10 mx-16 flex">
-      <div>
-        <h1 className="text-sm text-darkGray font-bold p-1">Your Items</h1>
-        <div className="border border-lightGray p-5  w-[1000px] rounded-2xl">
-          {clientItems &&
-            clientItems.map((item, index) => (
-              <Order
-                key={index}
-                handleDeleteOrder={() =>
-                  handleDeleteOrder(
-                    favorites.find(
-                      (i) =>
-                        i.item_id == item.item_id && i.client_id == user?.id
-                    )?.id
-                  )
-                }
-                order={item}
-              />
-            ))}
-          {!clientItems.length && (
-            <h1 className="text-sm text-darkGray font-bold flex items-center justify-center p-5">
-              You have not added any items to your favorites yet!
-            </h1>
-          )}
+    <div>
+      {loading ? (
+        <div className=" flex w-screen h-[400px] justify-center items-center ">
+          <LoadingIcons.ThreeDots stroke="blue" />
+          <h1 className="text-sm font-bold px-4">loading...</h1>
         </div>
-      </div>
+      ) : (
+        <div className="my-10 mx-16 flex flex-col">
+          <h1 className="text-sm text-darkGray font-bold p-1">Your Items</h1>
+          <div className="border border-lightGray p-5  w-[1000px] rounded-2xl">
+            {clientItems &&
+              clientItems.map((item, index) => (
+                <Order
+                  key={index}
+                  handleDeleteOrder={() =>
+                    handleDeleteOrder(
+                      favorites.find(
+                        (i) =>
+                          i.item_id == item.item_id && i.client_id == user?.id
+                      )?.id
+                    )
+                  }
+                  order={item}
+                />
+              ))}
+            {!clientItems.length && (
+              <h1 className="text-sm text-darkGray font-bold flex items-center justify-center p-5 mb-20">
+                You have not added any items to your favorites yet!
+              </h1>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
