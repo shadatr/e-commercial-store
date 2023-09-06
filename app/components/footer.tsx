@@ -3,9 +3,11 @@ import { SocialIcon } from "react-social-icons";
 
 const Footer = () => {
   return (
-    <div className="flex  items-end h-full pt-52">
-      <div className="flex h-[150px] bg-lightGray w-full items-center justify-center">
-        <div className="flex justify-between items-center w-[600px] h-full">
+    <div className="mt-auto bg-lightGray">
+      <div className="flex justify-center items-center  h-[100px] ">
+        {" "}
+        {/* Adjust h-16 to match your footer's height */}
+        <div className="flex justify-between items-center w-[600px]  h-full ">
           <SocialIcon url="https://twitter.com" />
           <SocialIcon url="https://instagram.com" />
           <SocialIcon url="https://facebook.com" />
@@ -16,5 +18,6 @@ const Footer = () => {
     </div>
   );
 };
+
 
 export default Footer;
