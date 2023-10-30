@@ -7,11 +7,17 @@ import Order from "@/app/components/order";
 import { toast } from "react-toastify";
 import { useDataFetching } from "@/app/components/useDataFetching";
 import LoadingIcons from "react-loading-icons";
+import { redirect } from "next/navigation";
 
 function page() {
-  const session = useSession({ required: true });
+  const session = useSession({ required: false });
   const user = session.data?.user;
   const [loading, setLoading] = useState<boolean>(true);
+
+    
+  if (!session.data?.user) {
+    redirect("/");
+  }
 
   const {
     refresh,

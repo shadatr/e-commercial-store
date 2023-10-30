@@ -4,7 +4,7 @@ import axios from "axios";
 import { ImageType } from "@/app/types/types";
 import { FaRegStar } from "react-icons/fa";
 import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import { useDataFetching } from "@/app/components/useDataFetching";
 import LoadingIcons from "react-loading-icons";
 
@@ -13,6 +13,7 @@ const Page = ({ params }: { params: { id: number } }) => {
   const user = session.data?.user;
   const router = useRouter();
   const [loading, setLoading] = useState<boolean>(true);
+
 
   const {
     cartItems,
@@ -75,8 +76,8 @@ const Page = ({ params }: { params: { id: number } }) => {
   };
 
   const handleAddToCart = (qunt:number) => {
-    if (session.status == "unauthenticated") {
-      router.push("/auth/login");
+    if (!session.data?.user) {
+      redirect("/auth/login");
     } else {
       const itemFound = cartItems.find(
         (item) => item.item_id == params.id && user?.id == item.client_id
