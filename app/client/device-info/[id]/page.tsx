@@ -34,9 +34,10 @@ const Page = ({ params }: { params: { id: number } }) => {
 
   const [quantity, setQuantity] = useState<number>(
     cartItems.find(
-      (item) => item.item_id == params.id && user?.id == item.client_id
-    )?.quantity || 1
+      (item) => item.item_id === params.id && user?.id === item.client_id
+    )?.quantity ?? 1
   );
+  
 
   useEffect(() => {
     if (
@@ -50,6 +51,9 @@ const Page = ({ params }: { params: { id: number } }) => {
     ) {
       setLoading(false);
     }
+    setQuantity(cartItems.find(
+      (item) => item.item_id == params.id && user?.id == item.client_id
+    )?.quantity??1)
   }, [
     cartItems,
     images,
@@ -87,16 +91,19 @@ const Page = ({ params }: { params: { id: number } }) => {
           id: itemFound.id,
           quantity: qunt,
         };
+
         axios.post("/api/addMoreFromTheItem", data);
         return;
       }
-      const data = {
-        client_id: user?.id,
-        item_id: params.id,
-        quantity: qunt,
-        left_items: prp ? prp?.quantity - qunt : 0,
-      };
-      axios.post("/api/cart", data);
+      else{
+        const data = {
+          client_id: user?.id,
+          item_id: params.id,
+          quantity: qunt,
+          left_items: prp ? prp?.quantity - qunt : 0,
+        };
+        axios.post("/api/cart", data);
+      }
 
       setRefresh(!refresh);
     }
@@ -123,30 +130,30 @@ const Page = ({ params }: { params: { id: number } }) => {
           <h1 className="text-sm font-bold px-4">loading...</h1>
         </div>
       ) : (
-        <div className="m-10 flex">
+        <div className="lg:m-10 sm:m-4 flex sm:flex-col lg:flex-row">
           <div className="flex flex-col">
             <img
               src={selectedImage?.image_url}
-              className="w-[450px] border border-lightGray rounded-xl"
+              className="lg:w-[450px] sm:w-[250px] border border-lightGray rounded-xl"
             />
             <div className="flex">
               {img.map((item, index) => (
                 <img
                   src={item.image_url}
                   key={index}
-                  className="w-[100px] m-1.5 border border-lightGray rounded-xl cursor-pointer"
+                  className="lg:w-[100px] sm:w-[50px] lg:m-1.5 sm:m-1 border border-lightGray rounded-xl cursor-pointer"
                   onClick={() => handleImageClick(item)}
                 />
               ))}
             </div>
           </div>
-          <div className="p-8 w-[600px]">
-            <h1 className="text-sm font-medium">
+          <div className="lg:p-8 sm:p-2 lg:w-[600px] sm:w-[230px]">
+            <h1 className="sm:text-sm lg:text-xsm font-medium">
               {brnd?.brand_name.toUpperCase()} {device?.name}{" "}
               {mmry?.memory_size}GB {proces?.processor}{" "}
               {selectedColor?.color_name}
             </h1>
-            <h1 className="text-lg font-bold my-4">{prp?.price}$</h1>
+            <h1 className="lg:text-lg  sm:text-sm font-bold my-4">{prp?.price}$</h1>
             <p className="flex flex-row justify-center items-center bg-yellow-300 w-14 rounded-lg">
               {device?.stars.toFixed(1)} <FaRegStar className="h-7" />
             </p>
@@ -157,9 +164,9 @@ const Page = ({ params }: { params: { id: number } }) => {
             <h1 className="bg-blue text-secondary my-3 p-2 w-[80px] rounded-xl font-semibold">
               Details
             </h1>
-            <p className="text-xsm ">{prp?.details}</p>
+            <p className="lg:text-xsm sm:text-xxsm ">{prp?.details}</p>
           </div>
-          <div className=" border border-lightGray rounded-xl w-[270px] py-16 h-[340px] shadow-md ml-5 p-5">
+          <div className=" border border-lightGray rounded-xl w-[270px] lg:py-16 sm:py-8 lg:h-[240px] sm:h-[100px] shadow-md ml-5 p-5">
             {prp?.quantity ? (
               <>
                 {cartItems.find(

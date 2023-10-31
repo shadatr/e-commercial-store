@@ -129,7 +129,7 @@ const page = () => {
         </div>
       ) : (
         <div className="flex w-full justify-center items-center flex-col">
-          <div className="text-sm flex flex-row space-x-4 p-5">
+          <div className="lg:text-sm sm:text-xsm flex flex-row space-x-4 p-5">
             <button
               onClick={() => handleTabClick("Tab 1")}
               className={`py-2 px-4 rounded-md border ${
@@ -152,25 +152,25 @@ const page = () => {
             </button>
           </div>
           {activeTab == "Tab 1" && (
-            <div className="border border-lightGray w-[1000px] p-10 rounded-2xl">
+            <div className="border border-lightGray lg:w-[1000px] sm:w-[300px] lg:p-10 sm:p-2 rounded-2xl">
               <div className="flex w-full justify-between">
                 {edit && userInfo ? (
-                  <div className="flex flex-col">
+                  <div className="flex flex-col lg:text-[16px] sm:text-xxsm">
                     <span className="flex justify-between items-center p-2">
                       <p className="font-semibold ">Name And Surname</p>
                       <input
                         value={userInfo2[0]?.name}
                         placeholder="name and surname"
-                        className=" py-2 px-4 border border-lightGray w-[400px] rounded-xl"
+                        className=" py-2 px-4 border border-lightGray lg:w-[400px] sm:w-[150px] rounded-xl"
                         onChange={(e) => handleInputChange(e, "name")}
                       />
                     </span>
-                    <span className="flex justify-between items-center p-2">
+                    <span className="flex justify-between items-center lg:p-2">
                       <p className="font-semibold ">Phone</p>
                       <input
                         value={userInfo2[0]?.phone}
                         placeholder="phone"
-                        className=" py-2 px-4 border border-lightGray w-[400px] rounded-xl"
+                        className=" py-2 px-4 border border-lightGray lg:w-[400px] sm:w-[150px] rounded-xl"
                         onChange={(e) => handleInputChange(e, "phone")}
                       />
                     </span>
@@ -179,7 +179,7 @@ const page = () => {
                       <input
                         value={userInfo2[0]?.address}
                         placeholder="address"
-                        className=" py-2 px-4 border border-lightGray w-[400px] rounded-xl"
+                        className=" py-2 px-4 border border-lightGray lg:w-[400px] sm:w-[150px] rounded-xl"
                         onChange={(e) => handleInputChange(e, "address")}
                       />
                     </span>
@@ -188,13 +188,13 @@ const page = () => {
                       <input
                         value={userInfo2[0]?.email}
                         placeholder="email"
-                        className=" py-2 px-4  border border-lightGray w-[400px] rounded-xl"
+                        className=" py-2 px-4  border border-lightGray lg:w-[400px] sm:w-[150px] rounded-xl"
                         onChange={(e) => handleInputChange(e, "email")}
                       />
                     </span>
                   </div>
                 ) : (
-                  <div className="w-[700px]">
+                  <div className="lg:w-[700px] sm:w-[300px] lg:text-[16px] sm:text-xxsm">
                     <span className="flex justify-between p-2">
                       <p className="font-semibold ">Name And Surname</p>
                       <h1>{userInfo && userInfo[0]?.name}</h1>
@@ -214,7 +214,7 @@ const page = () => {
                   </div>
                 )}
                 <button
-                  className="border border-blue px-4 py-2 font-medium text-blue rounded-xl h-[45px]"
+                  className="border border-blue lg:px-4 lg:py-2 sm:p-1 font-medium text-blue rounded-xl h-[45px]  lg:text-[16px] sm:text-xxsm"
                   onClick={() => (edit ? handleChangeInfo() : setEdit(!edit))}
                 >
                   {edit ? "save changes" : "Edit"}
@@ -223,7 +223,7 @@ const page = () => {
             </div>
           )}
           {activeTab == "Tab 2" && (
-            <div className="border border-lightGray p-5  w-[1000px] rounded-2xl">
+            <div className="border border-lightGray lg:p-5 sm:p-2  lg:w-[1000px] sm:w-[300px] rounded-2xl">
               {clientItems &&
                 clientItems.map((item, index) => (
                   <OrderedItem key={index} order={item} />

@@ -19,13 +19,12 @@ const LoginPage = () => {
       password,
       redirect: false,
     });
-    console.log(result)
-    console.log(session);
+    
     if (session) {
       redirect("/");
     }
     if (!result?.error) {
-      toast.success('Login successful!');
+      toast.success('Logged successfully!');
       router.push('/'); // Redirect to the home page upon successful login
       
     } 

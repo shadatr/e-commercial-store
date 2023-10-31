@@ -100,9 +100,9 @@ function page() {
           <h1 className="text-sm font-bold px-4">loading...</h1>
         </div>
       ) : (
-        <div className="my-10 mx-16 flex flex-col">
+        <div className="lg:my-10 lg:mx-16 sm:my-5 sm:mx-8 flex flex-col">
           <h1 className="text-sm text-darkGray font-bold p-1">Your Items</h1>
-          <div className="border border-lightGray p-5  w-[1000px] rounded-2xl">
+          <div className="border border-lightGray lg:p-5 sm:p-1 lg:w-[1000px] sm:w-[300px] rounded-2xl">
             {clientItems &&
               clientItems.map((item, index) => (
                 <Order

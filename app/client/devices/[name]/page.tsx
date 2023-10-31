@@ -112,12 +112,12 @@ const Page = ({ params }: { params: { name: string } }) => {
           <h1 className="text-sm font-bold px-4">loading...</h1>
         </div>
       ) : (
-        <div className="flex flex-row p-10">
-          <div className=" border border-lightGray mr-8 rounded-lg p-5 w-[250px]">
+        <div className="flex flex-row lg:p-10 sm:p-5">
+          <div className=" border border-lightGray lg:mr-8 sm:mr-2 rounded-lg lg:p-5 sm:p-3 lg:w-[250px] sm:w-[120px] lg:text-[16px] sm:text-xxsm sm:h-[500px]">
             <form className="py-2">
               <label className="block mb-2 font-bold">Brand</label>
               {brand.map((brnd, index) => (
-                <p key={index} className="mb-1 text-xsm">
+                <p key={index} className="mb-1 lg:text-xsm sm:text-xxsm">
                   <input
                     type="checkbox"
                     onChange={() => handleCheckBrand(brnd.id)}
@@ -131,7 +131,7 @@ const Page = ({ params }: { params: { name: string } }) => {
             <form className="py-2">
               <label className="block mb-2 font-bold ">Memory</label>
               {memory.map((memr, index) => (
-                <p key={index} className="mb-1 text-xsm">
+                <p key={index} className="mb-1 lg:text-xsm sm:text-xxsm">
                   <input
                     type="checkbox"
                     onChange={() => handleCheckMemory(memr.id)}
@@ -145,7 +145,7 @@ const Page = ({ params }: { params: { name: string } }) => {
             <form className="py-2">
               <label className="block mb-2 font-bold">Color</label>
               {colors.map((cl, index) => (
-                <p key={index} className="mb-1 text-xsm">
+                <p key={index} className="mb-1 lg:text-xsm sm:text-xxsm">
                   <input
                     type="checkbox"
                     onChange={() => handleCheckColor(cl.id)}
@@ -159,7 +159,7 @@ const Page = ({ params }: { params: { name: string } }) => {
             <form className="py-2">
               <label className="block mb-2 font-bold">Processor</label>
               {processors.map((pro, index) => (
-                <p key={index} className="mb-1 text-xsm">
+                <p key={index} className="mb-1 lg:text-xsm sm:text-xxsm">
                   <input
                     type="checkbox"
                     onChange={() => handleCheckProcessor(pro.id)}
@@ -172,24 +172,24 @@ const Page = ({ params }: { params: { name: string } }) => {
             </form>
             <form className="py-2">
               <label className="block mb-2 font-bold">Price</label>
-              <p className="flex text-xsm items-center ">
+              <p className="flex lg:text-xsm sm:text-xxsm items-center ">
                 <input
                   type="number"
                   placeholder="minimum price"
                   onChange={(e) => setMinPrice(parseInt(e.target.value))}
-                  className="mr-2 px-2 py-1 border rounded-md w-20"
+                  className="mr-2 px-2 py-1 border rounded-md lg:w-20 sm:w-10"
                 />
                 {" - "}
                 <input
                   type="number"
                   placeholder="maximum price"
                   onChange={(e) => setMaxPrice(parseInt(e.target.value))}
-                  className="px-2 py-1 border rounded-md w-20"
+                  className="px-2 py-1 border rounded-md lg:w-20 sm:w-10"
                 />
               </p>
             </form>
           </div>
-          <div className="grid grid-cols-4">
+          <div className="grid lg:grid-cols-4 sm:grid-cols-1">
             {properties.map((prp, index) => {
               const deviceColor = deviceColors.find(
                 (im) => im.id === prp.device_color_id

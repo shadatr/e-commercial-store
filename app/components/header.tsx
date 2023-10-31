@@ -83,14 +83,14 @@ const Header = () => {
 
   return (
     <div>
-      <div className="flex flex-row ">
-        <h1 className="text-blue text-[32px] font-black p-4">TechMarket</h1>
+      <div className="flex flex-row sm:py-4">
+        <Link className="text-blue lg:text-[32px] sm:text-xsm font-black lg:p-4 sm:p-2" href={"/"}>TechMarket</Link>
         <div>
-          <div className="border-[1px] w-[689px] h-[58px] border-lightGray mx-4 mt-4 rounded-[8px] flex justify-between ml-[250px]">
+          <div className="border-[1px] lg:text-[16px] sm:text-xxsm lg:w-[689px] sm:w-[180px] lg:h-[58px] sm:h-[20px] border-lightGray lg:mx-4 lg:mt-4 sm:mt-2 rounded-[8px] flex justify-between lg:ml-[250px]">
             <input
               ref={inputRef}
               placeholder="🔎 Search device..."
-              className="p-4 m-1 w-[600px] outline-none border-lightGray"
+              className="lg:p-4 m-1 outline-none border-lightGray"
               value={searchTerm}
               onChange={(e) => {
                 setSearchTerm(e.target.value);
@@ -98,18 +98,12 @@ const Header = () => {
                 setShowResults(true);
               }}
             />
-            <button
-              onClick={() => handleSearch(searchTerm || "")}
-              className="w-[102px] h-[36px] rounded-[8px] bg-blue text-[20px] text-secondary m-2.5 "
-            >
-              Search
-            </button>
           </div>
           {showResults && filteredDevices.length > 0 && (
             <div className="flex absolute flex-col max-h-[400px] overflow-y-auto">
               {filteredDevices.map((device) => (
                 <Link
-                  className="bg-secondary  border w-[689px] h-[48px] border-lightGray py-2 px-4 rounded-[8px] ml-[250px] "
+                  className="bg-secondary lg:text-[16px] sm:text-xxsm border lg:w-[689px] sm:w-[180px] lg:h-[48px] sm:h-[35px] border-lightGray py-2 px-4 rounded-[8px] lg:ml-[250px] "
                   key={device.item_id}
                   href={`/client/device-info/${device.item_id}`}
                 >
@@ -129,18 +123,18 @@ const Header = () => {
           </Link>
         )}
         {session.status == "authenticated" && (
-          <div className="flex pl-20">
+          <div className="flex lg:pl-20 sm:pl-1 mt-1">
             <div className="group">
               <Link href={"/client/user-account"}>
-                <AiOutlineUser size="28" className="mt-8 m-1 cursor-pointer" />
+                <AiOutlineUser  className="icon lg:mt-8 lg:m-1 cursor-pointer" />
               </Link>
-              <div className=" absolute hidden border  border-blue rounded-xl group-hover:block px-5 py-2 mr-16 bg-secondary">
+              <div className=" absolute hidden border border-blue rounded-xl group-hover:block px-5 py-2 mr-16 bg-secondary">
                 My Account
               </div>
             </div>
             <div className="group">
               <Link href={"/client/favorites"}>
-                <FaRegStar size="28" className="mt-8 m-1 cursor-pointer" />
+                <FaRegStar className="icon lg:mt-8 lg:m-1 cursor-pointer" />
               </Link>
               <div className=" absolute hidden border  border-blue rounded-xl group-hover:block px-5 py-2 mr-16 bg-secondary">
                 Favorites
@@ -148,21 +142,21 @@ const Header = () => {
             </div>
             <div className="group">
               <Link href={"/client/cart"}>
-                <FaShoppingCart size="28" className="mt-8 m-1 cursor-pointer" />
+                <FaShoppingCart className="icon lg:mt-8 lg:m-1 cursor-pointer" />
                 <div className=" absolute hidden border border-blue rounded-xl group-hover:block px-5 py-2 bg-secondary">
                   Cart
                 </div>
               </Link>
             </div>
             <button onClick={() => signOut({ redirect: true })}>
-              <AiOutlineLogout size="28" className="mt-3 m-1 cursor-pointer" />
+              <AiOutlineLogout className=" icon lg:mt-3 lg:m-1 cursor-pointer" />
             </button>
           </div>
         )}
       </div>
-      <div className="border-t-[1px] width-full border-lightGray"></div>
+      <div className="border-t-[1px] width-full sm:text-xsm border-lightGray"></div>
       <div className="flex w-full justify-center items-center">
-        <div className="flex flex-row text-darkGray font-medium text-[20px] w-[800px] justify-between p-2">
+        <div className="flex flex-row text-darkGray font-medium sm:text-xsm lg:text-[20px] lg:w-[800px] sm:w-[300px] justify-between p-2">
           <Link href={"/client/devices/phone"}>Phone</Link>
           <Link href={"/client/devices/tablet"}>Tablet</Link>
           <Link href={"/client/devices/laptop"}>Laptop</Link>
