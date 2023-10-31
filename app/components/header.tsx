@@ -117,7 +117,7 @@ const Header = () => {
         {session.status != "authenticated" && (
           <Link
             href={"/auth/login"}
-            className="w-[90px] flex justify-center items-center h-[36px] rounded-[8px] bg-blue text-[18px] m-6  text-secondary"
+            className="lg:w-[90px] sm:w-[50px] sm:h-[20px] flex justify-center items-center h-[36px] rounded-[8px] bg-blue lg:text-[18px] sm:text-xsm lg:m-6 sm:m-1  text-secondary"
           >
             Log In
           </Link>
