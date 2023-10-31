@@ -113,7 +113,7 @@ const Page = ({ params }: { params: { name: string } }) => {
         </div>
       ) : (
         <div className="flex flex-row lg:p-10 sm:p-5">
-          <div className=" border border-lightGray lg:mr-8 sm:mr-2 rounded-lg lg:p-5 sm:p-3 lg:w-[250px] sm:w-[120px] lg:text-[16px] sm:text-xxsm sm:h-[500px]">
+          <div className=" border border-lightGray lg:mr-8 sm:mr-2 rounded-lg lg:p-5 sm:p-3 lg:w-[250px] sm:w-[120px] lg:text-[16px] sm:text-xxsm lg:h-[600px] sm:h-[500px]">
             <form className="py-2">
               <label className="block mb-2 font-bold">Brand</label>
               {brand.map((brnd, index) => (
